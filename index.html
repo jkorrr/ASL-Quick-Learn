@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+    #container {
+        margin: 0px auto;
+        width: 500px;
+        height: 375px;
+        border: 10px #333 solid;
+    }
+    #videoElement {
+        width: 500px;
+        height: 375px;
+        background-color: #666;
+    }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo"></div>
+      <div class="nav-items">
+        <a href="/">Home</a> <a href="/">About</a> <a href="/">Contact</a>
+      </div>
+      <div id="container">
+        <video autoplay="true" id="videoElement">
+
+        </video>
+      </div>
+      <script>
+        let video = document.querySelector("#videoElement")
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true})
+            .then(function (stream) {
+                video.srcObject = stream;
+            })
+            .catch (function (error) {
+                console.log("Something went wrong!")
+            })
+        }
+        else {
+            console.log("getUserMedia not supported!")
+        }
+      </script>
+    </nav>
+    <section class="hero">
+      <div class="hero-container">
+        <div class="column-left">
+          <h1>Send Unlimited Messages</h1>
+          <p>
+            Sign Language is Universal.
+          </p>
+          <button>Get Started</button>
+        </div>
+        <div class="column-right">
+          <img
+            src="/Users/artem/Downloads/sleeping-bear.svg"
+            alt="illustration
+        "
+            class="hero-image"
+          />
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
