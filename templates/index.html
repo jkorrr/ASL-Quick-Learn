@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename= 'css/style.css') }}" />
+
+
+    <style>
+    #container {
+        margin: 0px auto;
+        width: 600px;
+        height: 475px;
+    }
+    #videoElement {
+        width: 700px;
+        height: 470px;
+        
+    }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="logo"></div>
+      <h2 id = "letter"> A</h2>
+      <script>
+        let image = document.getElementById("letter");
+
+      </script>
+      
+ 
+      <div class="nav-items">
+      </div>
+      <div style = "position:absolute; left:50px; top:100px;" id="container">
+        <video autoplay="true" width="700" height="475" id="videoElement"> </video>
+        
+      </div>
+      <div style = "position:absolute; left:800px; top:100px;" id = "Imgbox">
+        <canvas id="canvas" width="600" height="475"></canvas>
+      </div>
+
+      <script>
+            let video = document.querySelector("#videoElement")
+            if (navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: true})
+                .then(function (stream) {
+                    video.srcObject = stream;
+                })
+                .catch (function (error) {
+                    console.log("Something went wrong!")
+                })
+            }
+            else {
+                console.log("getUserMedia not supported!")
+            }
+    
+      </script>
+    </nav>
+    <section class="hero">
+      <div class="hero-container">
+        <div style = "position:absolute; left:620px; top:600px;" class="column-left">
+          <h1>Click to take picture</h1>
+      
+          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+          <script>
+            let count = 0;
+            let i = 0;
+            function picture() {
+              let click_button = document.querySelector("#click-photo");
+              var canvas = document.getElementById("canvas");
+              var ctx = canvas.getContext("2d");
+              let currentLetter = document.getElementById("letter").innerHTML;
+
+   	          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+   	          let image_data_url = canvas.toDataURL('image/jpeg');
+
+              const s = JSON.stringify(image_data_url);
+   	          // data url of the image
+              $.ajax({
+              url:"/test",
+              type:"POST",
+              contentType: "application/json",
+              data: JSON.stringify(s)})
+              .done(function (data) {
+                console.log('test' + i)
+                img = new Image();
+                x = 'static/annotated' + i + '.png';
+                img.src = x
+                i = i + 1;
+                img.onload = function (e)
+                {
+                    ctx.drawImage(img, 0, 0);
+                }
+              });
+                
+            document.getElementById("Score").innerHTML = "Score: " + count;
+            count = count + 1
+            updateLetter()
+            }
+
+            function updateLetter() {
+                const alphabet = "abcdefghiklmnopqrstuvwxy"
+                const randomCharacter = alphabet[Math.floor(Math.random() * alphabet.length)]
+                document.getElementById("letter").innerHTML = randomCharacter;
+            }
+
+
+
+          </script>
+
+          <h1 id="Score">
+            Score
+          </h1>
+        <div style = "position:absolute; left:500px; top:3px;" class="buts">
+            <button id="click-photo" onclick = "picture();">Snap!</button>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
